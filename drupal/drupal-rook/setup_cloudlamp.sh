@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Copyright 2018 Google, LLC.
-# Authors: Fernando Sanchez <gifee@google.com>, Sebastian Weigand <tdg@google.com>
+# Authors: Fernando Sanchez <fersanchez@google.com>, Sebastian Weigand <tdg@google.com>
 # CloudLAMP Setup script
 
 export VERSION="v0.3-rook"
