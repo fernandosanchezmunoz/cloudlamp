@@ -12,7 +12,7 @@ command -v docker >/dev/null 2>&1 || {
 	exit 1
 }
 
-# Validate or force setting env vars, then run from docker
+# Validate or force setting env vars, then run from docker,
 # Otherwise prompt for interactive input:
 declare -a VARS=(
 	"ACCOUNT_ID"
@@ -35,7 +35,7 @@ for var in "${VARS[@]}"; do
 	echo "**DEBUG: "$var" is set to "${!var}
 done
 
-# Check MASTER_PASSWORD is at least 20 chars long
+# Check MASTER_PASSWORD is at least 20 chars long:
 while true; do
 	if [[ ${#MASTER_PASSWORD} -le 19 ]]; then
 		echo "**ERROR: MASTER PASSWORD must be set and AT LEAST 20 characters long"
