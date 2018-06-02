@@ -4,8 +4,8 @@ set -o errexit -o nounset -o pipefail
 
 # Check for gcloud:
 command -v gcloud >/dev/null 2>&1 || {
-	echo "The 'gcloud' command was not found. Please install the Google Cloud SDK from: https://cloud.google.com/sdk/downloads" >&2
-	exit 1
+  echo "The 'gcloud' command was not found. Please install the Google Cloud SDK from: https://cloud.google.com/sdk/downloads" >&2
+  exit 1
 }
 
 # This executes all the gcloud commands in parallel and then assigns them to separate variables:
