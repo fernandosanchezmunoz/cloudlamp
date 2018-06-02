@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-
-set -o errexit -o nounset -o pipefail
+# CloudLAMP Pre-flight script
+# Copyright 2018 Google, LLC
+# Sebastian Weigand <tdg@google.com>
+# Fernando Sanchez <fersanchez@google.com>
 
 # Check for gcloud:
 command -v gcloud >/dev/null 2>&1 || {
@@ -27,28 +29,13 @@ if [[ $VARS_OK == "false" ]]; then
 	exit 1
 fi
 
-
-# # create bucket for Terraform state
-# ###################################
-
-# TODO: Fix up this thing:
-
-#make bucket - catch if it already exists so we don't exit but ask
-echo "**INFO: Creating bucket for Terraform state"
-if gsutil ls gs://${TF_VAR_bucket_name}; then
-	echo "**INFO: Terraform state bucket "${TF_VAR_bucket_name} "found."
-else
-	echo "**INFO: Terraform state bucket "${TF_VAR_bucket_name} "does not exist."
-	read -r -p "Do you want to create it? [y/N] " response
-	case "$response" in
-	[yY][eE][sS] | [yY])
-		gsutil mb -l ${TF_VAR_region} "gs://"${TF_VAR_bucket_name}
-		;;
-	*)
-		echo "Terraform state bucket is needed. Exiting."
-		exit
-		;;
-	esac
+# Create a GCS bucket for Terraform state; ignore if it's already there:
+BUCKET_STATUS=$(gsutil mb -l $GCP_REGION -c Regional gs://$GCP_PROJECT-terraform-state 2>&1)
+if [[ $? != 0 ]]; then
+  if [[ $BUCKET_STATUS != *"409"* ]]; then
+    echo "Error creating Terraform state bucket: $BUCKET_STATUS"
+    exit 1
+  fi
 fi
 
 # Create backend Terraform file:
