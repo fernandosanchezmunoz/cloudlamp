@@ -1,5 +1,3 @@
-# These are listed separately to unauthoratatively enable them, rather
-# than set the total APIs to just those listed below:
 resource "google_project_service" "cloudresourcemanager" {
   service = "cloudresourcemanager.googleapis.com"
 }

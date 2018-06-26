@@ -17,6 +17,13 @@ command -v gcloud >/dev/null 2>&1 || {
 }
 echo "[ OK ]"
 
+printf '%-50s' "Checking for kubectl..."
+command -v kubectl >/dev/null 2>&1 || {
+  error "The 'kubectl' command was not found. You can install it via: 'gcloud components install kubectl'"
+  exit 1
+}
+echo "[ OK ]"
+
 # This executes all the gcloud commands in parallel and then assigns them to separate variables:
 # Needed for non-array capabale bashes, and for speed.
 printf '%-50s' "Checking gcloud configuration..."
@@ -57,6 +64,7 @@ echo "[ OK ]"
 # Create backend Terraform file:
 printf '%-50s' "Creating Terraform backend file..."
 cat << EOF > backend.tf
+# Note: This file is generated from preflight.sh:
 terraform {
  backend "gcs" {
    bucket  = "$GCP_PROJECT-terraform-state"
@@ -67,8 +75,18 @@ terraform {
 EOF
 echo "[ OK ]"
 
+# Populate Terraform default variables:
+printf '%-50s' "Setting Terraform variables..."
+cat << EOF > terraform.tfvars
+# Note: This file is generated from preflight.sh:
+gcp_region  = "$GCP_REGION"
+gcp_zone    = "$GCP_ZONE"
+gcp_project = "$GCP_PROJECT"
+EOF
+echo "[ OK ]"
+
 echo "
 Success! You are now ready to deploy CloudLAMP via Terraform via:
   terraform init
-  terraform [plan | apply]
+  terraform [ plan | apply ]
 "

@@ -146,11 +146,10 @@ resource "kubernetes_service" "cloud-drupal" {
 
     type = "LoadBalancer"
 
-    // not working:
-    load_balancer_ip = "${google_compute_address.frontend.0.address}"
+    // FIXME: This is not working:
+    //load_balancer_ip = "${google_compute_address.frontend.0.address}"
 
     session_affinity = "ClientIP"
-
     port {
       protocol    = "TCP"
       port        = 80

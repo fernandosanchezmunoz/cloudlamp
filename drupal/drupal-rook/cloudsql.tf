@@ -1,8 +1,7 @@
-//sql instance
 resource "google_sql_database_instance" "master" {
   name             = "${var.cloudsql_instance}"
   database_version = "${var.cloudsql_db_version}"
-  region           = "${var.region}"
+  region           = "${var.gcp_region}"
 
   settings {
     tier = "${var.cloudsql_tier}"
@@ -18,7 +17,6 @@ resource "google_sql_database_instance" "master" {
   }
 }
 
-//output
 output "self_link_sql_instance" {
   value = "${google_sql_database_instance.master.self_link}"
 }
@@ -27,12 +25,10 @@ output "connection_name" {
   value = "${google_sql_database_instance.master.connection_name}"
 }
 
-//sql proxy user account
 resource "google_sql_user" "cloudsql-user" {
   name     = "${var.cloudsql_username}"
   instance = "${google_sql_database_instance.master.name}"
 
-  //host     = "me.com"
   password = "${var.master_password}"
 }
 

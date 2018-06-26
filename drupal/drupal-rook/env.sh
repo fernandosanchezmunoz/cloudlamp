@@ -47,47 +47,48 @@ declare -a REQUIRED_APIS=(\
     'storage-component.googleapis.com' \
     'cloudresourcemanager.googleapis.com' \
     )
-export TF_VAR_bucket_name=${TF_VAR_project}"-terraform"
+
+#GKE cluster details
+#GKE service
+#Storage - Shared filesystem
+#cloudSQL
+#network and security
+#networking
+#service account to use for CloudSQL proxy
 export GOOGLE_APPLICATION_CREDENTIALS=${TF_VAR_CREDS}
 export GOOGLE_PROJECT=${TF_VAR_project}
-#network and security
-export TF_VAR_network=${TF_VAR_project}"-net"			#name of a network to be created
-export TF_VAR_subnetwork=${TF_VAR_project}"-subnet"		#name of a subnet to be created
-export TF_VAR_subnetcidr="10.10.10.0/24"				#addressing for the subnet
-export TF_VAR_tag=${TF_VAR_project}"-tag"               #used to group instances for firewalling
-#Storage - Shared filesystem
-export TF_VAR_fs_name="bitnami-fs"
-export TF_VAR_fs_size="200Gi"
-export TF_VAR_fs_mount_path="/bitnami"
-#service account to use for CloudSQL proxy
-export TF_VAR_cloudsql_service_account_name="cloudsql-svc-acct"
-export TF_VAR_cloudsql_service_account_description="Service account for CloudSQL proxy"
+export TF_VAR_bucket_name=${TF_VAR_project}"-terraform"
 export TF_VAR_cloudsql_client_role="roles/cloudsql.client"
-export TF_VAR_create_keys_role="roles/iam.serviceAccountKeyAdmin"
-#cloudSQL
-export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"
-export TF_VAR_cloudsql_username="cloudsqlproxy"
-export TF_VAR_cloudsql_tier="db-n1-standard-1"
-export TF_VAR_cloudsql_storage_type="SSD"
-export TF_VAR_cloudsql_db_version="MYSQL_5_7"
 export TF_VAR_cloudsql_db_creds_path="~/.ssh/cloudsql-tf-creds.json"
-#GKE cluster details
-export TF_VAR_gke_cluster_name=$TF_VAR_project"-gke"
-export TF_VAR_gke_cluster_version="1.8.8-gke.0"
-export TF_VAR_gke_machine_type="n1-standard-2"
-export TF_VAR_gke_cluster_size="3"
-export TF_VAR_gke_max_cluster_size="10"
-export TF_VAR_gke_username="client"
-#GKE service
-export TF_VAR_gke_service_name=$TF_VAR_project"-drupal-svc"
-export TF_VAR_gke_app_name=$TF_VAR_project"-drupal-app"
-export TF_VAR_gke_drupal_image="bitnami/drupal:8.3.7-r0"
-export TF_VAR_drupal_username="user"
+export TF_VAR_cloudsql_db_version="MYSQL_5_7"
+export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"
+export TF_VAR_cloudsql_service_account_description="Service account for CloudSQL proxy"
+export TF_VAR_cloudsql_service_account_name="cloudsql-svc-acct"
+export TF_VAR_cloudsql_storage_type="SSD"
+export TF_VAR_cloudsql_tier="db-n1-standard-1"
+export TF_VAR_cloudsql_username="cloudsqlproxy"
+export TF_VAR_create_keys_role="roles/iam.serviceAccountKeyAdmin"
+export TF_VAR_dns_name=$TF_VAR_dns_zone_name"."$TF_VAR_domain
+export TF_VAR_dns_zone_name="blog"
+export TF_VAR_domain="groundcontrol.me"
 export TF_VAR_drupal_email="user@example.com"
 export TF_VAR_drupal_password=$TF_VAR_master_password
-export TF_VAR_gke_cloudsql_image="gcr.io/cloudsql-docker/gce-proxy:1.09"
-#networking
+export TF_VAR_drupal_username="user"
 export TF_VAR_ext_ip_name=$TF_VAR_project"-ext-ip"
-export TF_VAR_domain="groundcontrol.me"
-export TF_VAR_dns_zone_name="blog"
-export TF_VAR_dns_name=$TF_VAR_dns_zone_name"."$TF_VAR_domain
+export TF_VAR_fs_mount_path="/bitnami"
+export TF_VAR_fs_name="bitnami-fs"
+export TF_VAR_fs_size="200Gi"
+export TF_VAR_gke_app_name=$TF_VAR_project"-drupal-app"
+export TF_VAR_gke_cloudsql_image="gcr.io/cloudsql-docker/gce-proxy:1.09"
+export TF_VAR_gke_cluster_name=$TF_VAR_project"-gke"
+export TF_VAR_gke_cluster_size="3"
+export TF_VAR_gke_cluster_version="1.8.8-gke.0"
+export TF_VAR_gke_drupal_image="bitnami/drupal:8.3.7-r0"
+export TF_VAR_gke_machine_type="n1-standard-2"
+export TF_VAR_gke_max_cluster_size="10"
+export TF_VAR_gke_service_name=$TF_VAR_project"-drupal-svc"
+export TF_VAR_gke_username="client"
+export TF_VAR_network=${TF_VAR_project}"-net"			#name of a network to be created
+export TF_VAR_subnetcidr="10.10.10.0/24"				#addressing for the subnet
+export TF_VAR_subnetwork=${TF_VAR_project}"-subnet"		#name of a subnet to be created
+export TF_VAR_tag=${TF_VAR_project}"-tag"               #used to group instances for firewalling

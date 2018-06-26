@@ -1,14 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# CloudLAMP Post-flight script
+# Copyright 2018 Google, LLC
+# Sebastian Weigand <tdg@google.com>
+# Fernando Sanchez <fersanchez@google.com>
 
-#set -o errexit -o nounset -o pipefail
-
-source ./env.sh
-
-#set zone for cloud shell
-gcloud config set compute/zone ${TF_VAR_zone}
-#get kubernetes credentials
 gcloud container clusters get-credentials ${TF_VAR_gke_cluster_name}
-#add cluster role binding for Rook operator
+
+
 kubectl create clusterrolebinding my-cluster-admin-binding --clusterrole=cluster-admin --user=${ACCOUNT_ID} &&
 	#deploy rook
 	kubectl create -f ./rook-operator.yaml &&
