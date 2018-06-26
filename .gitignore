@@ -1,6 +1,0 @@
-./drupal/drupal-nfs/.terraform
-./drupal/drupal-nfs/*.tfstate
-./drupal/drupal-nfs/*.tfstate.backup
-./drupal/drupal-rook/.terraform
-./drupal/drupal-rook/*.tfstate
-./drupal/drupal-rook/*.tfstate.backup
