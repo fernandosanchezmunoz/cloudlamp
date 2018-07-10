@@ -20,14 +20,6 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
       }
 
       volume {
-        name = "${kubernetes_persistent_volume.vol_2.metadata.0.name}"
-
-        persistent_volume_claim {
-          claim_name = "${kubernetes_persistent_volume_claim.pvc_2.metadata.0.name}"
-        }
-      }
-
-      volume {
         name = "${kubernetes_secret.cloudsql-instance-credentials.metadata.0.name}"
 
         secret {
@@ -67,11 +59,7 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
         }
         volume_mount {
           name       = "${kubernetes_persistent_volume.vol_1.metadata.0.name}"
-          mount_path = "${var.gke_vol_1_mount_path}"
-        }
-        volume_mount {
-          name       = "${kubernetes_persistent_volume.vol_2.metadata.0.name}"
-          mount_path = "${var.gke_vol_2_mount_path}"
+          mount_path = "${var.gke_nfs_mount_path}"
         }
         volume_mount {
           name       = "${kubernetes_secret.cloudsql-db-credentials.metadata.0.name}"
@@ -113,11 +101,6 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
             value = "${var.drupal_email}"
           },
         ]
-
-        //{
-        //  name  = "GOOGLE_APPLICATION_CREDENTIALS"
-        //  value = "/secrets/cloudsql/credentials.json"
-        //},
       }
 
       container {
@@ -163,10 +146,9 @@ resource "kubernetes_service" "cloud-drupal" {
     type = "LoadBalancer"
 
     // not working:
-    load_balancer_ip = "${google_compute_address.frontend.0.address}"
+    //load_balancer_ip = "${google_compute_address.frontend.0.address}"
 
     session_affinity = "ClientIP"
-
     port {
       protocol    = "TCP"
       port        = 80
