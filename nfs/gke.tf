@@ -8,9 +8,6 @@ resource "google_container_cluster" "primary" {
 
     node_config {
       machine_type = "${var.gke_machine_type}"
-
-      # tags         = ["${var.tag}", "gke"]
-      //image_type = "UBUNTU"
     }
 
     autoscaling {
@@ -33,7 +30,6 @@ resource "google_container_cluster" "primary" {
   enable_legacy_abac = true
 }
 
-# The following outputs allow authentication and connectivity to the GKE Cluster.
 output "gke_client_certificate" {
   value = "${google_container_cluster.primary.master_auth.0.client_certificate}"
 }

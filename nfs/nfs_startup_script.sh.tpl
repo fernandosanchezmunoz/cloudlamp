@@ -4,7 +4,7 @@
 # Sebastian Weigand <tdg@google.com>
 
 # The disk ID is set by Google when the device is attached:
-ID="google-cloudlamp-nfs"
+ID="google-${nfs_disk_name}"
 LABEL="CloudLAMP-NFS"
 
 # If we've already run this script before, just exit:
@@ -12,6 +12,7 @@ if [ -b /dev/disk/by-label/$LABEL ]; then
     exit
 fi
 
+# Idempotently install requisite packages:
 apt-get update && apt-get -y upgrade
 apt-get install -y nfs-kernel-server
 

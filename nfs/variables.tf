@@ -30,6 +30,10 @@ variable "nfs_server_name" {
   default = "cloudlamp-nfs-server"
 }
 
+variable "nfs_server_os_image" {
+  default = "debian-9-stretch-v20180611"
+}
+
 variable "nfs_disk_name" {
   default = "cloudlamp-nfs-disk"
 }
@@ -39,7 +43,7 @@ variable "export_path" {
 }
 
 variable "nfs_machine_type" {
-  default = "f1-micro"
+  default = "n1-standard-2"
 }
 
 variable "nfs_raw_disk_type" {
@@ -75,7 +79,7 @@ variable "create_keys_role" {
 }
 
 variable "cloudsql_instance" {
-  default = "cloudlamp-sql-1"
+  default = "cloudlamp-sql-4"
 }
 
 variable "cloudsql_username" {
