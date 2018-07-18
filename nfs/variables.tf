@@ -79,7 +79,7 @@ variable "create_keys_role" {
 }
 
 variable "cloudsql_instance" {
-  default = "cloudlamp-sql-4"
+  default = "cloudlamp-sql-1"
 }
 
 variable "cloudsql_username" {
