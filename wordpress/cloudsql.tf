@@ -8,10 +8,6 @@ resource "google_sql_database_instance" "master" {
   }
 }
 
-output "self_link_sql_instance" {
-  value = "${google_sql_database_instance.master.self_link}"
-}
-
 output "connection_name" {
   value = "${google_sql_database_instance.master.connection_name}"
 }
@@ -19,12 +15,7 @@ output "connection_name" {
 resource "google_sql_user" "cloudsql-user" {
   name     = "${var.cloudsql_username}"
   instance = "${google_sql_database_instance.master.name}"
-
   password = "${var.master_password}"
-}
-
-output "sql_user" {
-  value = "${google_sql_user.cloudsql-user.name}"
 }
 
 resource "kubernetes_secret" "cloudsql-db-credentials" {

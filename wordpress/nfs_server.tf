@@ -4,10 +4,6 @@ resource "google_compute_disk" "default" {
   zone = "${var.gcp_zone}"
 }
 
-output "self_link_compute_disk" {
-  value = "${google_compute_disk.default.self_link}"
-}
-
 data "template_file" "nfs_startup_template" {
   template = "${file("nfs_startup_script.sh.tpl")}"
 
@@ -43,17 +39,3 @@ resource "google_compute_instance" "nfs_server" {
 
   metadata_startup_script = "${data.template_file.nfs_startup_template.rendered}"
 }
-
-output "nfs_instance_id" {
-  value = "${google_compute_instance.nfs_server.self_link}"
-}
-
-output "nfs_private_ip" {
-  value = "${google_compute_instance.nfs_server.network_interface.0.address}"
-}
-
-# Sab comment TODO - figure out if this is needed:
-# output "nfs_public_ip" {
-#   value = "${google_compute_instance.nfs_server.network_interface.0.access_config.0.assigned_nat_ip}"
-# }
-
