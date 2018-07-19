@@ -8,20 +8,14 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
       app = "${var.gke_app_name}"
     }
 
-    replicas = 3
+    replicas = 1
 
     template {
       volume {
-        name = "${var.fs_name}-vol"
+        name = "${kubernetes_persistent_volume.vol_1.metadata.0.name}"
 
-        flex_volume {
-          driver  = "rook.io/rook"
-          fs_type = "ceph"
-
-          options {
-            fsName      = "${var.fs_name}"
-            clusterName = "rook"
-          }
+        persistent_volume_claim {
+          claim_name = "${kubernetes_persistent_volume_claim.pvc_1.metadata.0.name}"
         }
       }
 
@@ -45,13 +39,6 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
         image = "${var.gke_drupal_image}"
         name  = "drupal"
 
-        resources {
-          requests {
-            cpu    = "0.5"
-            memory = "256Mi"
-          }
-        }
-
         liveness_probe {
           http_get {
             port = 80
@@ -63,14 +50,23 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
         }
 
         volume_mount {
-          name       = "${var.fs_name}-vol"
-          mount_path = "${var.fs_mount_path}"
+          name       = "${kubernetes_persistent_volume.vol_1.metadata.0.name}"
+          mount_path = "${var.gke_nfs_mount_path}"
         }
 
-        volume_mount {
-          name       = "${kubernetes_secret.cloudsql-db-credentials.metadata.0.name}"
-          mount_path = "/secrets/${kubernetes_secret.cloudsql-db-credentials.metadata.0.name}"
-        }
+        # volume_mount {
+        #   name = "${kubernetes_secret.cloudsql-db-credentials.metadata.0.name}"
+        #   mount_path = "/secrets/${kubernetes_secret.cloudsql-db-credentials.metadata.0.name}"
+        # }
+
+
+        # 
+        # MARIADB_HOST=192.168.86.183 
+        # MARIADB_ROOT_PASSWORD=pass
+        # MYSQL_CLIENT_CREATE_DATABASE_NAME=bitnami_drupal -e 
+        # MYSQL_CLIENT_CREATE_DATABASE_USER=bn_drupal 
+        # MYSQL_CLIENT_CREATE_DATABASE_PASSWORD=password
+        # DRUPAL_DATABASE_PASSWORD=password
 
         env = [
           {
@@ -78,32 +74,53 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
             value = "127.0.0.1"
           },
           {
-            name  = "MARIADB_PORT_NUMBER"
-            value = "3306"
-          },
-          {
-            name = "MARIADB_USER"
+            # {
+            #   name  = "MARIADB_PORT_NUMBER"
+            #   value = "1234"
+            # },
+            name = "MARIADB_ROOT_USER"
+
+            //value = "${var.cloudsql_username}"
 
             value = "${kubernetes_secret.cloudsql-db-credentials.data.username}"
           },
           {
-            name = "MARIADB_PASSWORD"
+            name = "MARIADB_ROOT_PASSWORD"
+
+            //value = "${var.master_password}"
 
             value = "${kubernetes_secret.cloudsql-db-credentials.data.password}"
           },
           {
-            name  = "DRUPAL_USERNAME"
-            value = "${var.drupal_username}"
+            name  = "MYSQL_CLIENT_CREATE_DATABASE_NAME"
+            value = "bitnami_drupal"
           },
           {
-            name  = "DRUPAL_PASSWORD"
-            value = "${var.drupal_password}"
+            name  = "MYSQL_CLIENT_CREATE_DATABASE_USER"
+            value = "${var.cloudsql_username}"
           },
           {
-            name  = "DRUPAL_EMAIL"
-            value = "${var.drupal_email}"
+            name  = "MYSQL_CLIENT_CREATE_DATABASE_PASSWORD"
+            value = "${kubernetes_secret.cloudsql-db-credentials.data.password}"
+          },
+          {
+            name  = "WORDPRESS_DATABASE_PASSWORD"
+            value = "BitnamiError"
           },
         ]
+
+        # {
+        #   name  = "DRUPAL_USERNAME"
+        #   value = "${var.drupal_username}"
+        # },
+        # {
+        #   name  = "DRUPAL_PASSWORD"
+        #   value = "${var.drupal_password}"
+        # },
+        # {
+        #   name  = "DRUPAL_EMAIL"
+        #   value = "${var.drupal_email}"
+        # },
       }
 
       container {
@@ -112,16 +129,8 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
 
         command = [
           "/cloud_sql_proxy",
-          "--dir=/cloudsql",
           "-instances=${google_sql_database_instance.master.connection_name}=tcp:3306",
           "-credential_file=/secrets/${kubernetes_secret.cloudsql-instance-credentials.metadata.0.name}/credentials.json",
-        ]
-
-        port = [
-          {
-            container_port = 3306
-            name           = "mysql"
-          },
         ]
 
         volume_mount {
@@ -146,7 +155,7 @@ resource "kubernetes_service" "cloud-drupal" {
 
     type = "LoadBalancer"
 
-    // FIXME: This is not working:
+    // not working:
     //load_balancer_ip = "${google_compute_address.frontend.0.address}"
 
     session_affinity = "ClientIP"

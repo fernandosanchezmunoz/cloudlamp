@@ -10,18 +10,6 @@ variable "master_password" {
   default = "cloudlampcloudlamp"
 }
 
-variable "fs_name" {
-  default = "bitnami-fs"
-}
-
-variable "fs_size" {
-  default = "200Gi"
-}
-
-variable "fs_mount_path" {
-  default = "/bitnami"
-}
-
 # =============================================================================
 # NFS
 # =============================================================================
@@ -31,7 +19,8 @@ variable "nfs_server_name" {
 }
 
 variable "nfs_server_os_image" {
-  default = "debian-9-stretch-v20180611"
+  # Debian Stretch has an annoying bug in NFS server post-install, which Ubuntu does not:
+  default = "ubuntu-1804-bionic-v20180717b"
 }
 
 variable "nfs_disk_name" {
@@ -39,7 +28,7 @@ variable "nfs_disk_name" {
 }
 
 variable "export_path" {
-  default = "/var/nfsroot"
+  default = "/srv/nfs"
 }
 
 variable "nfs_machine_type" {
@@ -51,7 +40,7 @@ variable "nfs_raw_disk_type" {
 }
 
 variable "vol_1" {
-  default = "drupal-vol"
+  default = "wordpress-vol"
 }
 
 variable "vol_1_size" {
@@ -59,7 +48,7 @@ variable "vol_1_size" {
 }
 
 variable "gke_nfs_mount_path" {
-  default = "/bitnami/"
+  default = "/var/www/html/"
 }
 
 # =============================================================================
@@ -67,7 +56,7 @@ variable "gke_nfs_mount_path" {
 # =============================================================================
 
 variable "cloudsql_service_account_name" {
-  default = "cloudsql-service-account"
+  default = "cloudsql-service-account-1"
 }
 
 variable "cloudsql_client_role" {
@@ -79,7 +68,7 @@ variable "create_keys_role" {
 }
 
 variable "cloudsql_instance" {
-  default = "cloudlamp-sql-1"
+  default = "cloudlamp-sql-2"
 }
 
 variable "cloudsql_username" {
@@ -98,8 +87,12 @@ variable "cloudsql_db_version" {
   default = "MYSQL_5_7"
 }
 
-variable "cloudsql_db_creds_path" {
-  default = "~/.ssh/cloudsql-tf-creds.json"
+variable "cloudsql_db_credentials_name" {
+  default = "cloudsql-db-credentials"
+}
+
+variable "cloudsql_instance_credentials_name" {
+  default = "cloudsql-instance-credentials"
 }
 
 # =============================================================================
@@ -131,33 +124,21 @@ variable "gke_username" {
 }
 
 # =============================================================================
-# Drupal
+# Wordpress
 # =============================================================================
 
 variable "gke_service_name" {
-  default = "cloudlamp-drupal-service"
+  default = "cloudlamp-wordpress-service"
 }
 
 variable "gke_app_name" {
-  default = "cloudlamp-drupal-app"
+  default = "cloudlamp-wordpress-app"
 }
 
-variable "gke_drupal_image" {
-  default = "bitnami/drupal:8.3.7-r0"
-}
-
-variable "drupal_username" {
-  default = "cloudlamp-drupal-user"
-}
-
-variable "drupal_password" {
-  default = "cloudlamp"
-}
-
-variable "drupal_email" {
-  default = "user@example.com"
+variable "gke_wordpress_image" {
+  default = "wordpress:latest"
 }
 
 variable "gke_cloudsql_image" {
-  default = "gcr.io/cloudsql-docker/gce-proxy:1.09"
+  default = "gcr.io/cloudsql-docker/gce-proxy:latest"
 }

@@ -27,10 +27,9 @@ output "sql_user" {
   value = "${google_sql_user.cloudsql-user.name}"
 }
 
-// Add to kubernetes secret - currently unused but backup/reference for future
 resource "kubernetes_secret" "cloudsql-db-credentials" {
   metadata {
-    name = "cloudsql-db-credentials"
+    name = "${var.cloudsql_db_credentials_name}"
   }
 
   data {

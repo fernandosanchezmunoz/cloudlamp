@@ -33,7 +33,7 @@ resource "google_service_account_key" "cloudsql-sa-key" {
 
 resource "kubernetes_secret" "cloudsql-instance-credentials" {
   metadata {
-    name = "cloudsql-instance-credentials"
+    name = "${var.cloudsql_instance_credentials_name}"
   }
 
   data {
