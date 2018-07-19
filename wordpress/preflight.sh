@@ -46,6 +46,11 @@ check_config() {
   fi
 }
 
+# Returns just the value we're looking for OR unset:
+gcloud_intercept() {
+  gcloud $@ 2>&1 | grep -v "active configuration"
+}
+
 # =============================================================================
 # Sanity checking
 # =============================================================================
@@ -59,16 +64,15 @@ fi
 
 # Check for our requisite binaries:
 check_command gcloud "Please install the Google Cloud SDK from: https://cloud.google.com/sdk/downloads"
-check_command kubectl "You can install it via: 'gcloud components install kubectl'"
 check_command terraform "Visit https://www.terraform.io/downloads.html for more information."
 
 # This executes all the gcloud commands in parallel and then assigns them to separate variables:
 # Needed for non-array capabale bashes, and for speed.
 printf '%-50s' "Checking gcloud configuration..."
-PARAMS=$(cat <(gcloud config get-value compute/zone 2>&1) \
-    <(gcloud config get-value compute/region 2>&1) \
-    <(gcloud config get-value project 2>&1) \
-  <(gcloud auth application-default print-access-token 2>&1))
+PARAMS=$(cat <(gcloud_intercept config get-value compute/zone) \
+    <(gcloud_intercept config get-value compute/region) \
+    <(gcloud_intercept config get-value project) \
+  <(gcloud_intercept auth application-default print-access-token))
 read GCP_ZONE GCP_REGION GCP_PROJECT GCP_AUTHTOKEN <<< $(echo $PARAMS)
 
 # Check for our requisiste gcloud parameters:
