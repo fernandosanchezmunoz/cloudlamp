@@ -68,7 +68,7 @@ variable "create_keys_role" {
 }
 
 variable "cloudsql_instance" {
-  default = "cloudlamp-sql-2"
+  default = "cloudlamp-sql"
 }
 
 variable "cloudsql_username" {
@@ -77,10 +77,6 @@ variable "cloudsql_username" {
 
 variable "cloudsql_tier" {
   default = "db-n1-standard-1"
-}
-
-variable "cloudsql_storage_type" {
-  default = "SSD"
 }
 
 variable "cloudsql_db_version" {
@@ -105,10 +101,6 @@ variable "gke_cluster_name" {
 
 variable "gke_cluster_size" {
   default = 3
-}
-
-variable "gke_cluster_version" {
-  default = "1.8.8-gke.0"
 }
 
 variable "gke_machine_type" {

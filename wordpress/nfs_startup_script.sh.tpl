@@ -7,8 +7,7 @@
 set -x
 
 # The disk ID is set by Google when the device is attached:
-#ID="google-${nfs_disk_name}"
-ID="google-disky2"
+ID="google-${nfs_disk_name}"
 LABEL="CloudLAMP-NFS"
 STATEFILE="/etc/cloudlamp-configured.state"
 
